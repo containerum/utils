@@ -1,54 +1,56 @@
 package utils
 
 import (
-	"github.com/jmoiron/sqlx"
-	"io"
 	"database/sql"
-	"fmt"
+
+	"github.com/jmoiron/sqlx"
+	"github.com/sirupsen/logrus"
 )
 
 type SQLXQueryLogger struct {
 	q sqlx.Queryer
-	w io.Writer
+	l *logrus.Entry
 }
 
-func NewSQLXQueryLogger(queryer sqlx.Queryer, logWriter io.Writer) *SQLXQueryLogger {
+func NewSQLXQueryLogger(queryer sqlx.Queryer, entry *logrus.Entry) *SQLXQueryLogger {
 	return &SQLXQueryLogger{
 		q: queryer,
-		w: logWriter,
+		l: entry,
 	}
 }
 
 func (q *SQLXQueryLogger) Query(query string, args ...interface{}) (*sql.Rows, error) {
-	fmt.Fprintln(q.w, append([]interface{}{query}, args...)...)
-	return q.q.Query(query, args...)
+	rows, err := q.q.Query(query, args...)
+	q.l.WithField("query", query).WithError(err).Debugln(args...)
+	return rows, err
 }
 
 func (q *SQLXQueryLogger) Queryx(query string, args ...interface{}) (*sqlx.Rows, error) {
-	fmt.Fprintln(q.w, append([]interface{}{query}, args...)...)
-	return q.q.Queryx(query, args...)
+	rows, err := q.q.Queryx(query, args...)
+	q.l.WithField("query", query).WithError(err).Debugln(args...)
+	return rows, err
 }
 
 func (q *SQLXQueryLogger) QueryRowx(query string, args ...interface{}) *sqlx.Row {
-	fmt.Fprintln(q.w, append([]interface{}{query}, args...)...)
-	return q.q.QueryRowx(query, args...)
+	row := q.q.QueryRowx(query, args...)
+	q.l.WithField("query", query).Debugln(args...)
+	return row
 }
 
 type SQLXExecLogger struct {
 	e sqlx.Execer
-	w io.Writer
+	l *logrus.Entry
 }
 
-func NewSQLXExecLogger(execer sqlx.Execer, logWriter io.Writer) *SQLXExecLogger {
+func NewSQLXExecLogger(execer sqlx.Execer, entry *logrus.Entry) *SQLXExecLogger {
 	return &SQLXExecLogger{
 		e: execer,
-		w: logWriter,
+		l: entry,
 	}
 }
 
 func (e *SQLXExecLogger) Exec(query string, args ...interface{}) (sql.Result, error) {
-	fmt.Fprintln(e.w, append([]interface{}{query}, args...)...)
-	return e.e.Exec(query, args...)
+	result, err := e.e.Exec(query, args...)
+	e.l.WithField("query", query).WithError(err).Debugln(args...)
+	return result, err
 }
-
-
