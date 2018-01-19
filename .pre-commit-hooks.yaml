@@ -9,5 +9,6 @@
 - id: gometalinter
   name: 'gometalinter'
   language: system
+  pass_filenames: false
   entry: gometalinter ./...
   description: "Run gometalinter to check code style"
