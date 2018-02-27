@@ -58,7 +58,9 @@ func RequireHeaders(errToReturn *cherry.Err, headers ...string) gin.HandlerFunc 
 		}
 		if len(notFoundHeaders) > 0 {
 			err := *errToReturn
-			err = *err.AddDetailF("required headers %v was not provided", notFoundHeaders)
+			for _, notFoundHeader := range notFoundHeaders {
+				err.AddDetailF("required header %s was not provided", notFoundHeader)
+			}
 			gonic.Gonic(&err, ctx)
 		}
 	}
