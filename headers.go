@@ -74,9 +74,11 @@ func PrepareContext(ctx *gin.Context) {
 }
 
 // RequireAdminRole is a gin middleware which requires admin role
-func RequireAdminRole(errToReturn *cherry.Err, ctx *gin.Context) {
-	if ctx.GetHeader(umtypes.UserRoleHeader) != "admin" {
-		gonic.Gonic(errToReturn.AddDetails("only admin can do this"), ctx)
+func RequireAdminRole(errToReturn *cherry.Err) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		if ctx.GetHeader(umtypes.UserRoleHeader) != "admin" {
+			gonic.Gonic(errToReturn.AddDetails("only admin can do this"), ctx)
+		}
 	}
 }
 
