@@ -45,7 +45,7 @@ func (q *sqlxQueryLogger) Queryx(query string, args ...interface{}) (*sqlx.Rows,
 
 func (q *sqlxQueryLogger) QueryRowx(query string, args ...interface{}) *sqlx.Row {
 	row := q.Queryer.QueryRowx(query, args...)
-	q.l.WithField("query", queryMinify(query)).Debugln(args...)
+	q.l.WithField("query", queryMinify(query)).WithError(row.Err()).Debugln(args...)
 	return row
 }
 
@@ -97,7 +97,7 @@ func (q *sqlxContextQueryLogger) QueryxContext(ctx context.Context, query string
 
 func (q *sqlxContextQueryLogger) QueryRowxContext(ctx context.Context, query string, args ...interface{}) *sqlx.Row {
 	rows := q.QueryerContext.QueryRowxContext(ctx, query, args...)
-	q.l.WithField("query", queryMinify(query)).Debugln(args...)
+	q.l.WithField("query", queryMinify(query)).WithError(rows.Err()).Debugln(args...)
 	return rows
 }
 
