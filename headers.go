@@ -45,6 +45,7 @@ var hdrToKey = map[string]interface{}{
 	textproto.CanonicalMIMEHeaderKey(umtypes.TokenIDHeader):     TokenIDContextKey,
 	textproto.CanonicalMIMEHeaderKey(umtypes.ClientIPHeader):    ClientIPContextKey,
 	textproto.CanonicalMIMEHeaderKey(umtypes.UserRoleHeader):    UserRoleContextKey,
+	textproto.CanonicalMIMEHeaderKey(umtypes.PartTokenIDHeader): PartTokenIDContextKey,
 }
 
 // RequireHeaders is a gin middleware to ensure that headers is set
