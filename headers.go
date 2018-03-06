@@ -48,7 +48,7 @@ var hdrToKey = map[string]interface{}{
 }
 
 // RequireHeaders is a gin middleware to ensure that headers is set
-func RequireHeaders(errToReturn *cherry.Err, headers ...string) gin.HandlerFunc {
+func RequireHeaders(errToReturn func() *cherry.Err, headers ...string) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var notFoundHeaders []string
 		for _, v := range headers {
@@ -57,11 +57,11 @@ func RequireHeaders(errToReturn *cherry.Err, headers ...string) gin.HandlerFunc 
 			}
 		}
 		if len(notFoundHeaders) > 0 {
-			err := *errToReturn
+			err := errToReturn()
 			for _, notFoundHeader := range notFoundHeaders {
 				err.AddDetailF("required header %s was not provided", notFoundHeader)
 			}
-			gonic.Gonic(&err, ctx)
+			gonic.Gonic(err, ctx)
 		}
 	}
 }
