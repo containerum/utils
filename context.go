@@ -98,6 +98,12 @@ func MustGetPartTokenID(ctx context.Context) string {
 	return ptid
 }
 
+// GetPartTokenID attempts to extract part token ID using PartTokenIDContextKey from context
+func GetPartTokenID(ctx context.Context) (string, bool) {
+	ptid, ok := ctx.Value(PartTokenIDContextKey).(string)
+	return ptid, ok
+}
+
 // GetAcceptedLanguages extracts accepted languages from context
 func GetAcceptedLanguages(ctx context.Context) []string {
 	alangs, _ := ctx.Value(AcceptLanguageContextKey).([]string)
