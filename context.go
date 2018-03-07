@@ -2,18 +2,20 @@ package utils
 
 import "context"
 
-// Keys to inject data to context
-var (
-	FingerPrintContextKey = new(int)
-	ClientIPContextKey    = new(int)
-	UserAgentContextKey   = new(int)
-	SessionIDContextKey   = new(int)
-	UserIDContextKey      = new(int)
-	TokenIDContextKey     = new(int)
-	UserRoleContextKey    = new(int)
-	PartTokenIDContextKey = new(int)
+type contextKey int
 
-	AcceptLanguageContextKey = new(int)
+// Keys to inject data to context
+const (
+	FingerPrintContextKey contextKey = iota
+	ClientIPContextKey
+	UserAgentContextKey
+	SessionIDContextKey
+	UserIDContextKey
+	TokenIDContextKey
+	UserRoleContextKey
+	PartTokenIDContextKey
+
+	AcceptLanguageContextKey
 )
 
 // MustGetFingerprint attempts to extract client fingerprint using FingerPrintContextKey from context.
