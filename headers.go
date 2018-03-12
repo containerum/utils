@@ -39,8 +39,9 @@ func RequestHeadersMap(ctx context.Context) map[string]string {
 func RequestXHeadersMap(ctx context.Context) map[string]string {
 	ret := make(map[string]string)
 	for k, v := range ctx.Value(headersKey).(http.Header) {
+		k = textproto.CanonicalMIMEHeaderKey(k)
 		if len(v) > 0 && strings.HasPrefix(k, "X-") {
-			ret[textproto.CanonicalMIMEHeaderKey(k)] = v[0]
+			ret[k] = v[0]
 		}
 	}
 	return ret
