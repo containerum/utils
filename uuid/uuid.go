@@ -1,4 +1,4 @@
-package utils
+package uuid
 
 import (
 	"crypto/rand"
@@ -6,8 +6,8 @@ import (
 )
 
 func NewUUID() string {
-	uuid := make([]byte, 16)
-	_, err := rand.Read(uuid)
+	uuid := [16]byte{}
+	_, err := rand.Read(uuid[:])
 	if err != nil {
 		return ""
 	}
