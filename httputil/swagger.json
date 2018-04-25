@@ -7,7 +7,7 @@
       "required": false,
       "type": "string",
       "format": "uuid",
-      "description": "The ID e of the user on behalf of which the administrator can perform the action"
+      "description": "The ID of the of the user on behalf of which the administrator can perform the action"
     }
   }
 }
