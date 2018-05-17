@@ -47,7 +47,7 @@ func ValidateURLParamsMiddleware(vmap map[string]string, validate *validator.Val
 		errMap := make(map[string]validator.ValidationErrorsTranslations)
 		t, _ := translator.FindTranslator(GetAcceptedLanguages(ctx.Request.Context())...)
 		for param, tag := range vmap {
-			vErr := validate.VarCtx(ctx.Request.Context(), ctx.Param("param"), tag)
+			vErr := validate.VarCtx(ctx.Request.Context(), ctx.Param(param), tag)
 			if vErr != nil {
 				errMap[param] = vErr.(validator.ValidationErrors).Translate(t)
 			}
