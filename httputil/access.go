@@ -2,7 +2,6 @@ package httputil
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/containerum/cherry"
 	"github.com/containerum/cherry/adaptors/gonic"
@@ -48,7 +47,6 @@ func (a *AccessChecker) CheckAccess(requiredAccess string) gin.HandlerFunc {
 		}
 		project := ctx.Param(ProjectParam)
 		ns := ctx.Param(NamespaceParam)
-		fmt.Println(ns, project)
 
 		namespaceAccess, err := a.PermissionsClient.GetNamespaceAccess(ctx, project, ns)
 		if err != nil {
