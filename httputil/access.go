@@ -12,6 +12,11 @@ import (
 
 const AccessContext = "access-ctx"
 
+const (
+	ProjectParam   = "project"
+	NamespaceParam = "namespace"
+)
+
 type ProjectAccess struct {
 	ProjectID          string            `json:"project_id"`
 	ProjectLabel       string            `json:"project_label"`
@@ -41,8 +46,8 @@ func (a *AccessChecker) CheckAccess(requiredAccess string) gin.HandlerFunc {
 		if err != nil {
 			panic(err)
 		}
-		ns := ctx.Param("namespace")
-		project := ctx.Param("project")
+		project := ctx.Param(ProjectParam)
+		ns := ctx.Param(NamespaceParam)
 		fmt.Println(ns, project)
 
 		namespaceAccess, err := a.PermissionsClient.GetNamespaceAccess(ctx, project, ns)
