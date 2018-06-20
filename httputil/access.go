@@ -13,15 +13,15 @@ import (
 const AccessContext = "access-ctx"
 
 type ProjectAccess struct {
-	ProjectID          string
-	ProjectLabel       string
-	NamespacesAccesses []NamespaceAccess
+	ProjectID          string            `json:"project_id"`
+	ProjectLabel       string            `json:"project_label"`
+	NamespacesAccesses []NamespaceAccess `json:"namespaces"`
 }
 
 type NamespaceAccess struct {
-	NamespaceID    string
-	NamespaceLabel string
-	Access         kubeModel.UserGroupAccess
+	NamespaceID    string                    `json:"namespace_id"`
+	NamespaceLabel string                    `json:"namespace_label"`
+	Access         kubeModel.UserGroupAccess `json:"access"`
 }
 
 type Permissions interface {
