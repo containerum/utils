@@ -10,6 +10,7 @@ import (
 )
 
 const AccessContext = "access-ctx"
+const AllAccessContext = "all-access-ctx"
 
 const (
 	ProjectParam   = "project"
@@ -39,28 +40,36 @@ type AccessChecker struct {
 	NotFoundError     cherry.ErrConstruct
 }
 
-func (a *AccessChecker) CheckAccess(requiredAccess string) gin.HandlerFunc {
+func (a *AccessChecker) CheckAccess(requiredAccess kubeModel.UserGroupAccess) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		requiredAccessParsed, err := kubeModel.UserGroupAccessString(requiredAccess)
-		if err != nil {
-			panic(err)
-		}
 		project := ctx.Param(ProjectParam)
 		ns := ctx.Param(NamespaceParam)
 
-		namespaceAccess, err := a.PermissionsClient.GetNamespaceAccess(ctx, project, ns)
+		namespaceAccess, err := a.PermissionsClient.GetNamespaceAccess(ctx.Request.Context(), project, ns)
 		if err != nil {
 			gonic.Gonic(a.AccessError(), ctx)
 			return
 		}
 
-		if namespaceAccess.Access < requiredAccessParsed {
+		if namespaceAccess.Access < requiredAccess {
 			gonic.Gonic(a.NotFoundError(), ctx)
 			return
 		}
 
 		rctx := context.WithValue(ctx.Request.Context(), AccessContext, namespaceAccess)
 		ctx.Request = ctx.Request.WithContext(rctx)
+	}
+}
 
+func (a *AccessChecker) SaveAllAccesses() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		namespaceAccess, err := a.PermissionsClient.GetAllAccesses(ctx.Request.Context())
+		if err != nil {
+			gonic.Gonic(a.AccessError(), ctx)
+			return
+		}
+
+		rctx := context.WithValue(ctx.Request.Context(), AllAccessContext, namespaceAccess)
+		ctx.Request = ctx.Request.WithContext(rctx)
 	}
 }
