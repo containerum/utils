@@ -42,24 +42,25 @@ type AccessChecker struct {
 
 func (a *AccessChecker) CheckAccess(requiredAccess kubeModel.UserGroupAccess) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		if MustGetUserRole(ctx) != "admin" {
-			project := ctx.Param(ProjectParam)
-			ns := ctx.Param(NamespaceParam)
-
-			namespaceAccess, err := a.PermissionsClient.GetNamespaceAccess(ctx.Request.Context(), project, ns)
-			if err != nil {
-				gonic.Gonic(a.AccessError(), ctx)
-				return
-			}
-
-			if namespaceAccess.Access < requiredAccess {
-				gonic.Gonic(a.NotFoundError(), ctx)
-				return
-			}
-
-			rctx := context.WithValue(ctx.Request.Context(), AccessContext, namespaceAccess)
-			ctx.Request = ctx.Request.WithContext(rctx)
+		if MustGetUserRole(ctx) == "admin" {
+			return
 		}
+		project := ctx.Param(ProjectParam)
+		ns := ctx.Param(NamespaceParam)
+
+		namespaceAccess, err := a.PermissionsClient.GetNamespaceAccess(ctx.Request.Context(), project, ns)
+		if err != nil {
+			gonic.Gonic(a.AccessError(), ctx)
+			return
+		}
+
+		if namespaceAccess.Access < requiredAccess {
+			gonic.Gonic(a.NotFoundError(), ctx)
+			return
+		}
+
+		rctx := context.WithValue(ctx.Request.Context(), AccessContext, namespaceAccess)
+		ctx.Request = ctx.Request.WithContext(rctx)
 	}
 }
 
